@@ -24,7 +24,7 @@ configure do
   (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "created_date" DATE,
-    "content" TEXT
+    "comment" TEXT,
     "post_id" INTEGER
   )'
 end
@@ -67,8 +67,10 @@ post '/details/:post_id' do
 
   #if content.length <= 0
   #  @error = 'Type comment!'
-  #  return erb :details/:post_id
+  #  return erb :('/details/' + post_id)
   #end
 
-  erb "You typed comment #{content} for post #{post_id}"
+  @db.execute 'insert into Comments (created_date, comment, post_id) values (datetime(), ?, ?)', [content, post_id]
+
+  redirect to ('/details/' + post_id)
 end
